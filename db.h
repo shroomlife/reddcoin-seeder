@@ -114,7 +114,7 @@ public:
     if (stat1D.reliability > 0.55 && stat1D.count > 8) return true;
     if (stat1W.reliability > 0.45 && stat1W.count > 16) return true;
     if (stat1M.reliability > 0.35 && stat1M.count > 32) return true;
-    
+
     return false;
   }
   int GetBanTime() const {
@@ -292,7 +292,9 @@ public:
             db->ipToId[info.ip] = id;
             if (info.ourLastTry) {
               db->ourId.push_back(id);
-              if (info.IsGood()) db->goodId.insert(id);
+              if (info.IsGood()) {
+		db->goodId.insert(id);
+	      }
             } else {
               db->unkId.insert(id);
             }
