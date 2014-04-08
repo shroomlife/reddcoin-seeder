@@ -6,7 +6,7 @@ use bytes;
 use IO::Socket;
 use strict;
 
-my @dom = ("seed","bitcoin","sipa","be");
+my @dom = ("dnsseed","reddcoin","com");
 
 my $run :shared = 1;
 
@@ -18,7 +18,8 @@ sub go {
   my $sock = IO::Socket::INET->new(
     Proto    => 'udp',
     PeerPort => 53,
-    PeerAddr => "vps.sipa.be",
+    PeerAddr => "new.reddcoin.com",
+    Type     => SOCK_DGRAM,
   ) or die "Could not create socket: $!\n";
 
   while($run) {
@@ -44,7 +45,7 @@ sub go {
     $sock->send($msg);
     my $resp;
     $runs++ if ($sock->recv($resp, 512, 0));
-    
+
 #    $sock->close();
   }
   return $runs;
@@ -52,7 +53,7 @@ sub go {
 
 my @threads;
 
-for my $i (0..500) {
+for my $i (0..100) {
   $threads[$i] = threads->create(\&go, $i);
 }
 
