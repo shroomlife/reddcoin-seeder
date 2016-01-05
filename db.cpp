@@ -132,6 +132,11 @@ void CAddrDb::Add_(const CAddress &addr, bool force) {
   if (!force && !addr.IsRoutable())
     return;
   CService ipp(addr);
+  //filter addresses that dont run on the default port john
+  if (ipp.GetPort() != GetDefaultPort()) {
+    printf("%s: dropped. not using default port.\n", ToString(ipp).c_str());
+    return;
+  }
   if (banned.count(ipp)) {
     time_t bantime = banned[ipp];
     if (force || (bantime < time(NULL) && addr.nTime > bantime))
@@ -145,7 +150,8 @@ void CAddrDb::Add_(const CAddress &addr, bool force) {
     {
       ai.lastTry = addr.nTime;
       ai.services |= addr.nServices;
-//      printf("%s: updated\n", ToString(addr).c_str());
+//      john
+        printf("%s: updated\n", ToString(addr).c_str());
     }
     if (force) {
       ai.ignoreTill = 0;
@@ -162,7 +168,9 @@ void CAddrDb::Add_(const CAddress &addr, bool force) {
   int id = nId++;
   idToInfo[id] = ai;
   ipToId[ipp] = id;
+//  john
 //  printf("%s: added\n", ToString(ipp).c_str(), ipToId[ipp]);
+  printf("%s: added to unknown list.\n", ToString(ipp).c_str());
   unkId.insert(id);
   nDirty++;
 }
